@@ -2,21 +2,24 @@ package kernel
 
 import (
 	"regexp"
+	"strings"
 
 	"shiza.io/src"
 )
 
 type Lexer struct {
-	Code      string
+	Code      []string
 	Pos       int64
+	Line      int64
 	TokenList []Token
 }
 
 func NewLexer(codeContent string) *Lexer {
 	return &Lexer{
 		TokenList: []Token{},
-		Code:      codeContent,
+		Code:      strings.Split(codeContent, "\n"),
 		Pos:       0,
+		Line:      0,
 	}
 }
 
@@ -26,21 +29,25 @@ func (lexer *Lexer) RunLexicalAnalysis() {
 }
 
 func (lexer *Lexer) getNextToken() bool {
-	if lexer.Pos >= int64(len(lexer.Code)) {
+	if lexer.Line >= int64(len(lexer.Code)) {
 		return false
 	}
 	for _, tokenType := range TokenQuerySlice {
-		regexp := regexp.MustCompile("^" + tokenType.Reg)
-		result := regexp.FindAllString(lexer.Code[int(lexer.Pos):], -1)
+		regexp := regexp.MustCompile(tokenType.Reg)
+		result := regexp.FindAllString(lexer.Code[int(lexer.Line)][int(lexer.Pos):], -1)
 		if len(result) > 0 && len(result[0]) > 0 {
 			if !tokenType.IsNotRequired {
-				token := NewToken(tokenType, result[0], int64(lexer.Pos), int64(lexer.Pos))
+				token := NewToken(tokenType, result[0], lexer.Pos, lexer.Line)
 				lexer.TokenList = append(lexer.TokenList, token)
 			}
 			lexer.Pos += int64(len(result[0]))
+			if lexer.Pos >= int64(len(lexer.Code[int(lexer.Line)])) {
+				lexer.Line++
+				lexer.Pos = 0
+			}
 			return true
 		}
 	}
-	src.LogLexerError(lexer.Pos, lexer.Code[lexer.Pos:lexer.Pos+15], true)
+	src.LogLexerError(lexer.Pos, lexer.Line+1, lexer.Code[lexer.Line], true)
 	return false
 }

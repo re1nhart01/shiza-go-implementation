@@ -13,10 +13,10 @@ func LogFSError(content string, withFatalExit bool) {
 	}
 }
 
-func LogLexerError(pos int64, content string, withFatalExit bool) {
+func LogLexerError(pos int64, row int64, content string, withFatalExit bool) {
 	fmt.Println(MainErrorMessage)
-	fmt.Printf("[SHIZA]: %s, on position %d found an error! \n", ErrorTypes["lexical"], pos)
-	fmt.Printf("[SHIZA]: Code path: \n" + "  " + content)
+	fmt.Printf("[SHIZA]: %s, on position %d:%d found an error! \n", ErrorTypes["lexical"], row, pos)
+	fmt.Printf("[SHIZA]: Code path: \n" + "  " + content + "\n")
 	fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 	if withFatalExit {
 		os.Exit(0)
