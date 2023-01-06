@@ -8,6 +8,7 @@ import (
 type Parser struct {
 	Tokens []Token
 	Pos    int64
+	Line   int64
 	Scope  map[string]string
 }
 
@@ -15,6 +16,7 @@ func NewParser(tokenList []Token) Parser {
 	return Parser{
 		Tokens: tokenList,
 		Pos:    0,
+		Line:   0,
 		Scope:  map[string]string{},
 	}
 }
@@ -35,18 +37,20 @@ func (parser *Parser) match(tokens []TokenQuery) *Token {
 func (parser *Parser) checkIsExpected(tokens ...TokenQuery) *Token {
 	token := parser.match(tokens)
 	if token == nil {
-		src.LogParseError(parser.Pos, tokens[0].Name, true)
+		src.LogParseError(parser.Pos, parser.Line, tokens[0].Name, true)
 	}
 	return token
 }
 
-// func (parser *Parser) RunParseCode() ast_tree.ExpressionNode {
-// 	root := ast_tree.StatementsNode
-// 	for parser.Pos < len(parser.Tokens) {
-// 		codeStringNode := parser.parseExpression()
-// 	}
-// 	return root
-// }
+func (parser *Parser) RunParseCode() ast_tree.StatementsNode {
+	root := ast_tree.StatementsNode{}
+	for parser.Pos < int64(len(parser.Tokens)) {
+		codeStringNode := parser.parseExpression()
+		parser.checkIsExpected(TokenQuerySlice["SEMICOLON"])
+		root.AddNode(codeStringNode)
+	}
+	return root
+}
 
 func (parser *Parser) parseExpression() ast_tree.ExpressionNode {
 	return ast_tree.ExpressionNode{}

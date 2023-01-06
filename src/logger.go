@@ -23,9 +23,9 @@ func LogLexerError(pos int64, row int64, content string, withFatalExit bool) {
 	}
 }
 
-func LogParseError(pos int64, content string, withFatalExit bool) {
+func LogParseError(pos int64, line int64, content string, withFatalExit bool) {
 	fmt.Println(MainErrorMessage)
-	fmt.Printf("[SHIZA]: %s, on position %d expects a name %s! \n", ErrorTypes["parse"], pos, content)
+	fmt.Printf("[SHIZA]: %s, on position %d:%d expects a name %s! \n", ErrorTypes["parse"], pos, line, content)
 	if withFatalExit {
 		os.Exit(0)
 	}

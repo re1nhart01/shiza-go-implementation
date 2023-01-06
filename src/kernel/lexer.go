@@ -29,11 +29,11 @@ func (lexer *Lexer) RunLexicalAnalysis() {
 }
 
 func (lexer *Lexer) getNextToken() bool {
-	if lexer.Line >= int64(len(lexer.Code)) {
+	if lexer.Line >= int64(len(lexer.Code)) || len(lexer.Code[lexer.Line]) <= 0 {
 		return false
 	}
 	for _, tokenType := range TokenQuerySlice {
-		regexp := regexp.MustCompile(tokenType.Reg)
+		regexp := regexp.MustCompile("^" + tokenType.Reg)
 		result := regexp.FindAllString(lexer.Code[int(lexer.Line)][int(lexer.Pos):], -1)
 		if len(result) > 0 && len(result[0]) > 0 {
 			if !tokenType.IsNotRequired {
