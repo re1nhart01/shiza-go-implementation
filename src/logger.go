@@ -30,3 +30,11 @@ func LogParseError(pos int64, line int64, content string, withFatalExit bool) {
 		os.Exit(0)
 	}
 }
+
+func LogBundlingError(errMsg string, withFatalExit bool) {
+	fmt.Println(MainErrorMessage)
+	fmt.Printf("[SHIZA]: Oops, %s. Check file permissions or restart a compilation.", errMsg)
+	if withFatalExit {
+		os.Exit(0)
+	}
+}
