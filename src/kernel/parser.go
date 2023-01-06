@@ -12,6 +12,8 @@ type Parser struct {
 	Scope  map[string]string
 }
 
+var S__PARSED_VARIABLES = map[string]string{}
+
 func NewParser(tokenList []Token) Parser {
 	return Parser{
 		Tokens: tokenList,

@@ -13,6 +13,8 @@ type Token struct {
 	Content     string
 	PositionCol int64
 	PositionRow int64
+	HasLeftPar  bool
+	HasRightPar bool
 }
 
 func (token *Token) Print() {
@@ -37,9 +39,13 @@ var TokenQuerySlice = map[string]TokenQuery{
 		Name: "FUNCTION",
 		Reg:  `do [A-z0-9]+\s?\[]\s?`, //do ([A-z0-9]+)\s?\[]\s?\((?:[^}{]+|\{(?:[^}{]+|\{[^}{]*\})*\})*\)
 	},
+	"FUNCTION_CALL": {
+		Name: "FUNCTION",
+		Reg:  `[A-z0-9]+\s?\[]\s?`,
+	},
 	"VARIABLE": {
 		Name: "VARIABLE",
-		Reg:  "define ",
+		Reg:  "define [a-zA-Z]+",
 	},
 	"VARIABLE_IN_USE": {
 		Name: "VARIABLE_IN_USE",
@@ -51,7 +57,7 @@ var TokenQuerySlice = map[string]TokenQuery{
 	},
 	"CONSTANT": {
 		Name: "CONSTANT",
-		Reg:  "constant ",
+		Reg:  "constant [a-zA-Z]+",
 	},
 
 	//Types
